@@ -1,0 +1,93 @@
+db.sales.aggregate([
+    {$match:{"address.province":{$exists:true}}},
+    {$group:{_id:{"province":"$address.province"},
+             total_sale:{$sum:"$sales.product_total"}}},
+    {$sort:{total_sale:-1}}
+])
+
+db.sales.aggregate([
+    {$match:{"address.province":{$in:["AB","BC","SK","MB"]}}},
+    {$group:{_id:{"province":"$address.province"},
+             total_sale:{$sum:"$sales.product_total"}}},
+    {$sort:{total_sale:-1}}
+])
+
+db.sales.aggregate([
+    {$group:{_id:{"Category":"$sales.product_category"},
+                total_sale:{$sum:"$sales.product_total"}}},
+    {$sort:{total_sale:1}}
+])
+
+//sort and set the range.
+
+db.sales.aggregate([
+    {$group:{_id:{"Category":"$sales.product_category"},
+                total_sale:{$sum:"$sales.product_total"}}},
+    {$sort:{total_sale:1}},
+    {$skip:1},
+    {$limit:1}
+])
+
+
+db.sales.aggregate([
+    {$group:{_id:null, 
+        avg_qty:{$avg:"$sales.product_qty"}}}
+])
+
+
+// 
+{
+    "_id" : ObjectId("58096b2874e10c408d96407e"),
+    "name" : "Kimberly Harvey",
+    "request" : 1234567.0,
+    "date" : "2014-11-07T14:52:54Z",
+    "department" : "billing",
+    "estimation" : {
+        "cost" : 443.05,
+        "days" : 42.0,
+        "effort" : "extreme"
+    }
+}
+
+db.cust_sup.aggregate([
+    {$match:{"date":/2014/}},
+    {$group:{_id:{"department":"$department"},
+                avg_days:{$avg:"$estimation.days"}}},
+    {$sort:{"avg_days":-1}}
+])
+
+
+//Unwinds - make games array to split
+db.games.aggregate([
+    {$unwind:"$games"}
+])
+
+db.games.aggregate([
+    {$unwind:"$games"},
+    {$match:{"address.province":{$eq:"NB"}}}
+])
+
+db.games.aggregate([
+    {$unwind:"$games"},
+    {$group:{_id:{"Code":"$games.code"},
+               avg_wins:{$avg:"$games.wins"}}},
+    {$sort:{avg_wins:-1}}
+])
+
+//unwind both arrays
+db.students.aggregate([
+    {$unwind:"$terms"},
+    {$unwind:"$terms.courses"}
+])
+
+db.students.aggregate([
+    {$unwind:"$terms"},
+    {$unwind:"$terms.courses"},
+    {$group:{_id:"$enrollment_sem", 
+        avgGrade:{$avg:"$terms.courses.grade"}}},
+    {$sort:{avgGrade:-1}}
+])
+
+
+
+
