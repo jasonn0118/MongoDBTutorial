@@ -1,0 +1,97 @@
+// w3resi=ource exercise
+// 
+// 
+// 
+// 
+
+
+{
+    "_id" : ObjectId("5e589eeadb7c91cdd403b840"),
+    "address" : {
+        "building" : "2300",
+        "coord" : [ 
+            -73.8786113, 
+            40.8502883
+        ],
+        "street" : "Southern Boulevard",
+        "zipcode" : "10460"
+    },
+    "borough" : "Bronx",
+    "cuisine" : "American ",
+    "grades" : [ 
+        {
+            "date" : ISODate("2014-05-28T00:00:00.000Z"),
+            "grade" : "A",
+            "score" : 11
+        }, 
+        {
+            "date" : ISODate("2013-06-19T00:00:00.000Z"),
+            "grade" : "A",
+            "score" : 4
+        }, 
+        {
+            "date" : ISODate("2012-06-15T00:00:00.000Z"),
+            "grade" : "A",
+            "score" : 3
+        }
+    ],
+    "name" : "Wild Asia",
+    "restaurant_id" : "40357217"
+}
+
+ 
+// Q1) Write a MongoDB query to find the restaurants which belong to the borough Bronx and prepared either American or Chinese dish.
+
+db.Restaurants.find(
+    {
+        borough: "Bronx",
+        $or:[
+        {cuisine: "American "},
+        {cuisine:"Chinese dish"}
+        ]
+     },
+     {})
+
+
+// Q2) Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which achieved a score which is not more than 10.
+
+db.Restaurants.find(
+    {
+        "grades.score":{$not:{$gt:10}}
+     },
+     {restaurant_id:1,name:1,borough:1,cuisine:1})
+
+
+// Q3) Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which prepared dish except 'American' and 'Chinees' or restaurant's name begins with letter 'Wil'.
+
+db.Restaurants.find(
+    {
+        $or:
+        [
+            {name:/^Wil/},
+            {$and:
+             [
+               {cuisine:{$ne:"American "}},
+               {cuisine:{$ne:"Chinees"}}
+             ]
+            }
+         ]
+     },
+     {restaurant_id:1,name:1,borough:1,cuisine:1})
+
+// Q4) Write a MongoDB query to find the restaurant Id, name, and grades for those restaurants which achieved a grade of "A" and scored 11 on an ISODate "2014-08-11T00:00:00Z" among many of survey dates.
+db.Restaurants.find(
+    {
+        "grades.grade":"A",
+        "grades.score":11,
+        "grades.date":ISODate("2014-08-11T00:00:00Z")
+     },
+     {restaurant_id:1,name:1,grades:1})
+
+// Q5) Write a MongoDB query to arrange the name of the restaurants in ascending order along with all the columns.
+db.Restaurants.find(
+    {
+      
+     },
+     {}).sort({name:1})
+
