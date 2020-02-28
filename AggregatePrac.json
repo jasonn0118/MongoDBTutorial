@@ -1,3 +1,19 @@
+//Ex sales json structure.
+{
+    "_id" : ObjectId("5809687574e10c408d963c96"),
+    "category" : "standard",
+    "join_date" : "2012-12-09",
+    "address" : {
+        "city" : "Łomża",
+        "province" : "QC"
+    },
+    "sales" : {
+        "product_qty" : 11.0,
+        "product_total" : 381.35,
+        "product_category" : "Meat"
+    }
+}
+
 db.sales.aggregate([
     {$match:{"address.province":{$exists:true}}},
     {$group:{_id:{"province":"$address.province"},
