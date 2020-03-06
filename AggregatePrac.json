@@ -104,6 +104,45 @@ db.students.aggregate([
     {$sort:{avgGrade:-1}}
 ])
 
+//project
+db.users.aggregate(
+    [
+    {$project:
+        {_id:0,
+          year: {$substr: ["$join_date",0,4]},
+          month: {$substr: ["$join_date",5,2]},
+          province: "$address.province",
+          status: 1,
+          age: 1
+            }
+        
+        }
+    ]
+)
 
+//Average age by year for status "A"
 
+db.users.aggregate(
+    [
+    {$match:{"status":"A"}},
+    {$project:
+        {_id:0,
+          year: {$substr: ["$join_date",0,4]},
+          month: {$substr: ["$join_date",5,2]},
+          province: "$address.province",
+          status: 1,
+          age: 1
+            }
+        },
+      {$group:{_id:
+          {"Year":"$year"}, avg_age:
+          {$avg:"$age"}
+          }},
+          {$sort:{avg_age:-1}}
+        
+    ]
+)
+
+//convert age to age range
+// $switch or $cond
 
